@@ -2,64 +2,58 @@
 <html>
 <head>
   <title>Employee Details</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <style>
-    table {
-      border-collapse: collapse;
-      width: 100%;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-    }
-
-    th {
-      background-color: #f2f2f2;
-    }
-
     .filter-container {
       margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="filter-container">
-    <label for="designationFilter">Filter by Designation:</label>
-    <select id="designationFilter">
-      <option value="">All</option>
-      <option value="Senior Developer">Senior Developer</option>
-      <option value="QA Engineer">QA Engineer</option>
-      <option value="Project Manager">Project Manager</option>
-    </select>
-    <br>
-    <label for="skillsFilter">Filter by Skills:</label>
-    <select id="skillsFilter">
-      <option value="">All</option>
-      <option value="JavaScript">JavaScript</option>
-      <option value="Python">Python</option>
-      <option value="Java">Java</option>
-      <option value="HTML">HTML</option>
-      <option value="CSS">CSS</option>
-      <option value="Photoshop">Photoshop</option>
-      <option value="Manual Testing">Manual Testing</option>
-      <option value="SQL">SQL</option>
-    </select>
+  <div class="container">
+    <div class="filter-container">
+      <label for="designationFilter">Filter by Designation:</label>
+      <select id="designationFilter" class="form-control">
+        <option value="">All</option>
+        <option value="Senior Developer">Senior Developer</option>
+        <option value="QA Engineer">QA Engineer</option>
+        <option value="Project Manager">Project Manager</option>
+      </select>
+    </div>
+    <div class="filter-container">
+      <label for="skillsFilter">Filter by Skills:</label>
+      <select id="skillsFilter" class="form-control">
+        <option value="">All</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="Python">Python</option>
+        <option value="Java">Java</option>
+        <option value="HTML">HTML</option>
+        <option value="CSS">CSS</option>
+        <option value="Photoshop">Photoshop</option>
+        <option value="Manual Testing">Manual Testing</option>
+        <option value="SQL">SQL</option>
+      </select>
+    </div>
+    <div class="filter-container">
+      <label for="nameFilter">Filter by Name:</label>
+      <input type="text" id="nameFilter" class="form-control" placeholder="Enter name">
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Designation</th>
+          <th>Skills</th>
+          <th>Projects</th>
+        </tr>
+      </thead>
+      <tbody id="employeeTable">
+      </tbody>
+    </table>
   </div>
-
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Designation</th>
-        <th>Skills</th>
-        <th>Projects</th>
-      </tr>
-    </thead>
-    <tbody id="employeeTable">
-    </tbody>
-  </table>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
   <script>
     const jsonData = {
    "employees":[
@@ -691,17 +685,19 @@
     const employeeTable = document.getElementById("employeeTable");
     const designationFilter = document.getElementById("designationFilter");
     const skillsFilter = document.getElementById("skillsFilter");
+    const nameFilter = document.getElementById("nameFilter");
 
     function filterEmployees() {
       const selectedDesignation = designationFilter.value;
       const selectedSkills = skillsFilter.value;
+      const name = nameFilter.value.toLowerCase();
 
-      // Clear the table body
       employeeTable.innerHTML = "";
 
       jsonData.employees.forEach(employee => {
         if ((selectedDesignation === "" || employee.designation === selectedDesignation) &&
-            (selectedSkills === "" || employee.skills.includes(selectedSkills))) {
+            (selectedSkills === "" || employee.skills.includes(selectedSkills)) &&
+            (name === "" || employee.name.toLowerCase().includes(name))) {
           const row = document.createElement("tr");
           row.innerHTML = `
             <td>${employee.id}</td>
@@ -717,6 +713,7 @@
 
     designationFilter.addEventListener("change", filterEmployees);
     skillsFilter.addEventListener("change", filterEmployees);
+    nameFilter.addEventListener("input", filterEmployees);
 
     // Initial rendering
     filterEmployees();
